@@ -1,6 +1,9 @@
 package dto
 
-import "time"
+import (
+	"github.com/google/uuid"
+	"time"
+)
 
 type UserRegisterRequestDTO struct {
 	FullName  string `json:"full_name" validate:"required"`
@@ -10,6 +13,7 @@ type UserRegisterRequestDTO struct {
 }
 
 type UserTalentRegisterResponseDTO struct {
+	ID        uuid.UUID `json:"id"`
 	Message   string    `json:"message"`
 	Role      string    `json:"role"`
 	FullName  string    `json:"fullName"`

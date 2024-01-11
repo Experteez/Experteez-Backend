@@ -74,6 +74,7 @@ func UserTalentRegister(c *fiber.Ctx) error {
 	}
 
 	responseDTO := dto.UserTalentRegisterResponseDTO{
+		ID: 	  newTalent.ID,
 		Message:   "New Talent user created successfully",
 		Role:      string(newTalent.User.Role),
 		FullName:  newTalent.User.FullName,
