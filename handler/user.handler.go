@@ -15,7 +15,10 @@ func UserTalentRegister(c *fiber.Ctx) error {
 	user := new(dto.UserRegisterRequestDTO)
 
 	if err := c.BodyParser(user); err != nil {
-		return err
+		return c.Status(400).JSON(fiber.Map{
+			"message": "Error parsing new Talent user",
+			"error":   err.Error(),
+		})
 	}
 
 	validate := validator.New()
