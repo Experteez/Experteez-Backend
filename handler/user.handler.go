@@ -56,17 +56,18 @@ func UserTalentRegister(c *fiber.Ctx) error {
 		User: newUser,
 	}
 
-	var existingTalent entity.Talent
-	res := database.DB.Where("email = ?", user.Email).First(&existingTalent)
+	var existingUser entity.User
+	res := database.DB.Where("email = ?", user.Email).First(&existingUser)
 	if res.RowsAffected > 0 {
 		return c.Status(400).JSON(fiber.Map{
 			"message": "Email already exists",
 		})
 	}
 
+	newUserRes := database.DB.Create(&newUser)
 	newTalentRes := database.DB.Create(&newTalent)
 
-	if newTalentRes.Error != nil {
+	if newTalentRes.Error != nil || newUserRes.Error != nil {
 		return c.Status(500).JSON(fiber.Map{
 			"message": "Error creating new Talent user",
 			"error":   newTalentRes.Error.Error(),
@@ -74,7 +75,7 @@ func UserTalentRegister(c *fiber.Ctx) error {
 	}
 
 	responseDTO := dto.UserTalentRegisterResponseDTO{
-		ID: 	  newTalent.ID,
+		ID:        newTalent.ID,
 		Message:   "New Talent user created successfully",
 		Role:      string(newTalent.User.Role),
 		FullName:  newTalent.User.FullName,
