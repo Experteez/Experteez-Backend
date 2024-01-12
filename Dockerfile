@@ -1,23 +1,19 @@
-# Use the official Go image as the base image
 FROM golang:alpine
 
-# Set the working directory inside the container
-WORKDIR /goapp
+WORKDIR /app
 
-# Copy the Go module files
-COPY go.mod go.sum ./
+COPY go.mod .
 
-# Download the dependencies
+COPY go.sum .
+
 RUN go mod download
 
-# Copy the rest of the application code
 COPY . .
 
-# Build the Go application
-RUN go build -o main .
+RUN go mod tidy
 
-# Expose port 8080 to the outside world
+RUN go build -o ./out/dist .
+
 EXPOSE 8080
 
-# Set the entry point command to run the built binary
-CMD ["./main"]
+CMD ["./out/dist"]
