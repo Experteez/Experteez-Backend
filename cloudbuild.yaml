@@ -1,6 +1,6 @@
 steps:
   - name: "gcr.io/cloud-builders/docker"
-    args: ["build", "-t", "gcr.io/experteez/experteez-backend-service", "."]
+    args: ["build", "-t", "gcr.io/experteez/experteez-backend", "."]
 
   - name: "gcr.io/cloud-builders/docker"
-    args: ["push", "gcr.io/experteez/experteez-backend-service"]
+    args: ["push", "gcr.io/experteez/experteez-backend"]
