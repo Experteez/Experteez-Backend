@@ -73,11 +73,11 @@ func ProjectRegister (c *fiber.Ctx) error {
 		})
 	}
 
-	var user entity.User
-	err = database.DB.Where("email = ?", claims["email"]).First(&user).Error
+	var partner entity.Partner
+	err = database.DB.Where("email = ?", claims["email"]).First(&partner).Error
 	if err != nil {
 		return c.Status(400).JSON(fiber.Map{
-			"message": "Error getting user",
+			"message": "Error getting partner",
 			"error":   err.Error(),
 		})
 	}
@@ -86,12 +86,11 @@ func ProjectRegister (c *fiber.Ctx) error {
 		Name:        project.Name,
 		Description: project.Description,
 		Deadline:    deadline,
-		PartnerID:   user.ID,
+		PartnerID:   partner.ID,
 	}
 
 	newProjectRes := database.DB.Create(&newProject)
 
-	// Program will be returning error because violates FK constraint (fk_partners_project)
 	if newProjectRes.Error != nil {
 		return c.Status(500).JSON(fiber.Map{
 			"message": "Error creating new Project",
