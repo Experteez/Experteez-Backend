@@ -4,11 +4,12 @@ import (
 	"Experteez-Backend/database"
 	"Experteez-Backend/model/dto"
 	"Experteez-Backend/model/entity"
+	"Experteez-Backend/utils"
+	"strings"
 	"time"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
-	"github.com/google/uuid"
 )
 
 func ProjectHandlerGetAll (c *fiber.Ctx) error {
@@ -61,13 +62,31 @@ func ProjectRegister (c *fiber.Ctx) error {
 		})
 	}
 
+	authHeader := c.Get("Authorization")
+
+	token := strings.TrimPrefix(authHeader, "Bearer ")
+	claims, err := utils.VerifyToken(token)
+	if err != nil {
+		return c.Status(400).JSON(fiber.Map{
+			"message": "Error verifying token",
+			"error":   err.Error(),
+		})
+	}
+
+	var user entity.User
+	err = database.DB.Where("email = ?", claims["email"]).First(&user).Error
+	if err != nil {
+		return c.Status(400).JSON(fiber.Map{
+			"message": "Error getting user",
+			"error":   err.Error(),
+		})
+	}
+
 	newProject := entity.Project{
 		Name:        project.Name,
 		Description: project.Description,
 		Deadline:    deadline,
-		//TODO : Change PartnerID to Current User's ID
-		PartnerID:   uuid.New(),
-		//TODO : Add Mentors[] (Optional?)
+		PartnerID:   user.ID,
 	}
 
 	newProjectRes := database.DB.Create(&newProject)
