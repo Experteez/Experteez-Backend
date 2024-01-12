@@ -8,6 +8,7 @@ import (
 
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
+	"github.com/google/uuid"
 )
 
 func ProjectHandlerGetAll (c *fiber.Ctx) error {
@@ -61,13 +62,17 @@ func ProjectRegister (c *fiber.Ctx) error {
 	}
 
 	newProject := entity.Project{
-		Name:  project.Name,
+		Name:        project.Name,
 		Description: project.Description,
-		Deadline: deadline,
+		Deadline:    deadline,
+		//TODO : Change PartnerID to Current User's ID
+		PartnerID:   uuid.New(),
+		//TODO : Add Mentors[] (Optional?)
 	}
 
 	newProjectRes := database.DB.Create(&newProject)
 
+	// Program will be returning error because violates FK constraint (fk_partners_project)
 	if newProjectRes.Error != nil {
 		return c.Status(500).JSON(fiber.Map{
 			"message": "Error creating new Project",
@@ -81,7 +86,7 @@ func ProjectRegister (c *fiber.Ctx) error {
 		Name:	   		newProject.Name,
 		Description:	newProject.Description,
 		Deadline:		newProject.Deadline,
-
+		PartnerID: 		newProject.PartnerID,
 	}
 
 	return c.Status(201).JSON(responseDTO)

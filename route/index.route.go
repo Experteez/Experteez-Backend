@@ -26,4 +26,5 @@ func SetupRoutes(app *fiber.App) {
 	users.Get("/current", middleware.Auth, handler.GetCurrentUser)
 
 	v1.Get("/projects", handler.ProjectHandlerGetAll)
+	v1.Post("/projects", handler.ProjectRegister)
 }
