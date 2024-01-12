@@ -1,0 +1,6 @@
+steps:
+  - name: "gcr.io/cloud-builders/docker"
+    args: [ "build", "-t", "gcr.io/experteez/experteez-backend", ".", "-f", "Dockerfile" ]
+
+  - name: "gcr.io/cloud-builders/docker"
+    args: [ "push", "gcr.io/experteez/experteez-backend" ]
