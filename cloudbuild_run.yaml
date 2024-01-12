@@ -1,6 +1,16 @@
 steps:
   - name: "gcr.io/cloud-builders/docker"
-    args: [ "build", "-t", "gcr.io/experteez/experteez-backend", ".", "-f", "Dockerfile" ]
+    args:
+      [
+        "build",
+        "-t",
+        "gcr.io/experteez/experteez-backend",
+        ".",
+        "-f",
+        "Dockerfile",
+      ]
 
   - name: "gcr.io/cloud-builders/docker"
-    args: [ "push", "gcr.io/experteez/experteez-backend" ]
+    args: ["push", "gcr.io/experteez/experteez-backend"]
+options:
+logging: CLOUD_LOGGING_ONLY
