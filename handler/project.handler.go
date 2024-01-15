@@ -48,6 +48,7 @@ func ProjectHandlerGetAll(c *fiber.Ctx) error {
 	return c.Status(200).JSON(responseDTO)
 }
 
+// Mendapatkan semua project yang belum pernah diambil oleh talent
 func ProjectHandlerGetAllAvailable(c *fiber.Ctx) error {
 	authHeader := c.Get("Authorization")
 
@@ -60,17 +61,17 @@ func ProjectHandlerGetAllAvailable(c *fiber.Ctx) error {
 		})
 	}
 
-	var partner entity.Partner
-	err = database.DB.Where("email = ?", claims["email"]).First(&partner).Error
+	var talent entity.Talent
+	err = database.DB.Where("email = ?", claims["email"]).First(&talent).Error
 	if err != nil {
 		return c.Status(400).JSON(fiber.Map{
-			"message": "Error getting partner",
+			"message": "Error getting talent",
 			"error":   err.Error(),
 		})
 	}
 
 	var projects []entity.Project
-	results := database.DB.Where("partner_id != ?", partner.ID).Find(&projects)
+	results := database.DB.Find(&projects)
 
 	if results.Error != nil {
 		return c.Status(400).JSON(fiber.Map{
@@ -78,9 +79,28 @@ func ProjectHandlerGetAllAvailable(c *fiber.Ctx) error {
 		})
 	}
 
-	responseDTO := make([]dto.ProjectGetResponseDTO, len(projects))
+	// Filter project yang belum pernah diambil oleh talent
+	var availableProjects []entity.Project
+	for _, project := range projects {
+		var talents []entity.Talent
+		database.DB.Model(&project).Association("Talents").Find(&talents)
 
-	for i, project := range projects {
+		var isTaken bool = false
+		for _, talent := range talents {
+			if talent.ID == talent.ID {
+				isTaken = true
+				break
+			}
+		}
+
+		if !isTaken {
+			availableProjects = append(availableProjects, project)
+		}
+	}
+
+	responseDTO := make([]dto.ProjectGetResponseDTO, len(availableProjects))
+
+	for i, project := range availableProjects {
 		var mentors []entity.Mentor
 		var talents []entity.Talent
 		var applications []entity.ProjectApply
