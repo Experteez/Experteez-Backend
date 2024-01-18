@@ -1,8 +1,9 @@
 package dto
 
 import (
+	"Experteez-Backend/model/entity"
+
 	"github.com/google/uuid"
-	"time"
 )
 
 type UserRegisterRequestDTO struct {
@@ -12,14 +13,63 @@ type UserRegisterRequestDTO struct {
 	BirthDate string `json:"birth_date" validate:"required"`
 }
 
-type UserTalentRegisterResponseDTO struct {
-	ID        uuid.UUID `json:"id"`
+type TalentRegisterRequestDTO struct {
+	UserRegisterRequestDTO
+	Bio    string `json:"bio"`
+	Points int    `json:"points"`
+	Photo  string `json:"photo"`
+}
+
+type TalentRegisterResponseDTO struct {
 	Message   string    `json:"message"`
+	ID        uuid.UUID `json:"id"`
 	Role      string    `json:"role"`
 	FullName  string    `json:"fullName"`
 	Email     string    `json:"email"`
-	BirthDate time.Time `json:"birthDate"`
-	Bio       *string   `json:"bio,omitempty"`
-	Points    *int      `json:"points,omitempty"`
-	Photo     *string   `json:"photo,omitempty"`
+	BirthDate string `json:"birthDate"`
+	Bio       string    `json:"bio"`
+	Points    int       `json:"points"`
+	Photo     string    `json:"photo"`
+}
+
+type PartnerRegisterRequestDTO struct {
+	UserRegisterRequestDTO
+	Description string           `json:"description" validate:"required"`
+	Photo       string           `json:"photo"`
+	Projects    []entity.Project `json:"projects"`
+}
+
+type PartnerRegisterResponseDTO struct {
+	Message     string           `json:"message"`
+	ID          uuid.UUID        `json:"id"`
+	Role        string           `json:"role"`
+	FullName    string           `json:"fullName"`
+	Email       string           `json:"email"`
+	BirthDate   string       `json:"birthDate"`
+	Description string           `json:"description"`
+	Photo       string           `json:"photo"`
+	Projects    []entity.Project `json:"projects"`
+}
+
+type MentorRegisterRequestDTO struct {
+	UserRegisterRequestDTO
+	Company   string          `json:"company" validate:"required"`
+	Specialty string          `json:"specialty" validate:"required"`
+	Bio       string          `json:"bio"`
+	Photo     string          `json:"photo"`
+	Talents   []entity.Talent `json:"talents"`
+}
+
+type MentorRegisterResponseDTO struct {
+	Message   string          `json:"message"`
+	ID        uuid.UUID       `json:"id"`
+	Role      string          `json:"role"`
+	FullName  string          `json:"fullName"`
+	Email     string          `json:"email"`
+	BirthDate string      `json:"birthDate"`
+	Company   string          `json:"company"`
+	Specialty string          `json:"specialty"`
+	Bio       string          `json:"bio"`
+	Photo     string          `json:"photo"`
+	Talents   []entity.Talent `json:"talents"`
 }

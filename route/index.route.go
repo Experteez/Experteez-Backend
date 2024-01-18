@@ -21,10 +21,26 @@ func SetupRoutes(app *fiber.App) {
 	v1 := api.Group("/v1")
 
 	users := v1.Group("/users")
+	users.Get("/current", middleware.Auth, handler.GetCurrentUser)
 	users.Post("/login", handler.UserLogin)
 	users.Post("/talent/register", handler.UserTalentRegister)
-	users.Get("/current", middleware.Auth, handler.GetCurrentUser)
+	users.Post("/partner/register", handler.UserPartnerRegister)
+	users.Post("/mentor/register", middleware.Auth, handler.UserMentorRegister)
 
-	v1.Get("/projects", handler.ProjectHandlerGetAll)
-	v1.Post("/projects", handler.ProjectRegister)
+	partners := v1.Group("/partners")
+	partners.Get("/", middleware.Auth, handler.PartnerHandlerGetAll)
+
+	mentors := v1.Group("/mentors")
+	mentors.Get("/", middleware.Auth, handler.MentorHandlerGetAll)
+	mentors.Post("/:id/assign/:idProject", middleware.Auth, handler.MentorAssign)
+
+	projects := v1.Group("/projects")
+	projects.Get("/", middleware.Auth, handler.ProjectHandlerGetAll)
+	projects.Get("/available", middleware.Auth, handler.ProjectHandlerGetAllAvailable)
+	projects.Post("/", middleware.Auth, handler.ProjectRegister)
+	projects.Post("/:id/apply/register", middleware.Auth, handler.ProjectApplyRegister)
+
+	applications := v1.Group("/applications")
+	applications.Get("/:idProject", middleware.Auth, handler.ProjectApplyGetAllForProject)
+	applications.Put("/:id/accept", middleware.Auth, handler.ProjectApplyAccept)
 }
