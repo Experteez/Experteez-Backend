@@ -210,6 +210,25 @@ func ProjectApplyRegister(c *fiber.Ctx) error {
 		})
 	}
 
+	body := new(dto.ProjectApplyRegisterRequestDTO)
+
+	if err := c.BodyParser(body); err != nil {
+		return c.Status(400).JSON(fiber.Map{
+			"message": "Error parsing new ProjectApply",
+			"error":   err.Error(),
+		})
+	}
+
+	validate := validator.New()
+	errValidate := validate.Struct(body)
+	
+	if errValidate != nil {
+		return c.Status(400).JSON(fiber.Map{
+			"message": "Error validating new ProjectApply",
+			"error":   errValidate.Error(),
+		})
+	}
+
 	var user entity.User
 	err = database.DB.Where("email = ?", claims["email"]).First(&user).Error
 	if err != nil {
@@ -254,6 +273,8 @@ func ProjectApplyRegister(c *fiber.Ctx) error {
 	newApplication := entity.ProjectApply{
 		ProjectID: project.ID,
 		TalentID:  talent.ID,
+		WhyChoose: body.WhyChoose,
+		TellUs:    body.TellUs,
 		Status:    "Pending",
 	}
 
@@ -271,7 +292,6 @@ func ProjectApplyRegister(c *fiber.Ctx) error {
 	})
 }
 
-// belom disaring pake middleware
 func ProjectApplyAccept(c *fiber.Ctx) error {
 	var application entity.ProjectApply
 	err := database.DB.Where("id = ?", c.Params("id")).First(&application).Error

@@ -20,6 +20,8 @@ type ProjectApply struct {
 	ProjectID uuid.UUID      `json:"project_id"`
 	TalentID  uuid.UUID      `json:"talent_id"`
 	Status    Status         `json:"status"`
+	WhyChoose string         `json:"why_choose"`
+	TellUs    string         `json:"tell_us"`
 	CreatedAt time.Time      `json:"created_at"`
 	UpdatedAt time.Time      `json:"updated_at"`
 	DeletedAt gorm.DeletedAt `gorm:"index"`

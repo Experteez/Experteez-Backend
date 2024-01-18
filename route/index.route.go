@@ -32,6 +32,7 @@ func SetupRoutes(app *fiber.App) {
 
 	mentors := v1.Group("/mentors")
 	mentors.Get("/", middleware.Auth, handler.MentorHandlerGetAll)
+	mentors.Post("/:id/assign/:idProject", middleware.Auth, handler.MentorAssign)
 
 	projects := v1.Group("/projects")
 	projects.Get("/", middleware.Auth, handler.ProjectHandlerGetAll)

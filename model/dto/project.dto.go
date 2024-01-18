@@ -37,6 +37,11 @@ type ProjectGetResponseDTO struct {
 	Applications []entity.ProjectApply `json:"applications"`
 }
 
+type ProjectApplyRegisterRequestDTO struct {
+	WhyChoose string `json:"why_choose" validate:"required"`
+	TellUs    string `json:"tell_us" validate:"required"`
+}
+
 type ProjectApplyGetResponseDTO struct {
 	ID        uuid.UUID     `json:"id"`
 	ProjectID uuid.UUID     `json:"project_id"`
